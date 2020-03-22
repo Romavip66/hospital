@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "309114290499",
+    "firebase_url": "https://hospital-d0d6b.firebaseio.com",
+    "project_id": "hospital-d0d6b",
+    "storage_bucket": "hospital-d0d6b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:309114290499:android:961265c4389914c8c56ff6",
+        "android_client_info": {
+          "package_name": "com.example.diploma_hospital"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "309114290499-4eguk24isjnmb2ch96esd5ot7l2us0d7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.diploma_hospital",
+            "certificate_hash": "205c4eefa19d3b270ac012f520bb1f21996a204a"
+          }
+        },
+        {
+          "client_id": "309114290499-vt860fnkje4j1615aloocr3nuur8rhij.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcgD9oTwA2_jBFiJABgX19A9GiPB48Fho"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "309114290499-vt860fnkje4j1615aloocr3nuur8rhij.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

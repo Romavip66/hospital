@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.example.diploma_hospital.ui.home.HomeFragment"
+        android:label="Запись к врачу"
+        tools:layout="@layout/fragment_home"/>
+
+    <fragment
+        android:id="@+id/nav_login"
+        android:name="com.example.diploma_hospital.ui.login.LoginFragment"
+        android:label="Войти"
+        tools:layout="@layout/login_fragment">
+        <action
+            android:id="@+id/action_nav_login_to_nav_signup"
+            app:destination="@id/nav_signup" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_doctor"
+        android:name="com.example.diploma_hospital.ui.doctor.DoctorFragment"
+        android:label="Записи"
+        tools:layout="@layout/doctor_fragment"/>
+
+    <fragment
+        android:id="@+id/nav_notes"
+        android:name="com.example.diploma_hospital.ui.notes.NotesFragment"
+        android:label="Мои Записи"
+        tools:layout="@layout/notes_fragment"/>
+
+    <fragment
+        android:id="@+id/nav_logout"
+        android:name="com.example.diploma_hospital.ui.logout.LogoutFragment"
+        android:label="Выйти"
+        tools:layout="@layout/logout_fragment"/>
+
+    <fragment
+        android:id="@+id/nav_signup"
+        android:name="com.example.diploma_hospital.ui.signup.SignUpFragment"
+        android:label="Регитсрация"
+        tools:layout="@layout/sign_up_fragment">
+        <action
+            android:id="@+id/action_nav_signup_to_nav_login"
+            app:destination="@id/nav_login" />
+        <action
+            android:id="@+id/action_nav_signup_to_nav_notes"
+            app:destination="@id/nav_notes" />
+    </fragment>
+</navigation>
