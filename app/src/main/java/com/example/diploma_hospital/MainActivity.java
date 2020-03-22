@@ -19,7 +19,7 @@ import androidx.appcompat.widget.Toolbar;
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
-
+    NavigationView navigationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,9 +32,17 @@ public class MainActivity extends AppCompatActivity {
                 R.id.nav_home, R.id.nav_login, R.id.nav_doctor, R.id.nav_notes, R.id.nav_logout, R.id.nav_signup)
                 .setDrawerLayout(drawer)
                 .build();
+        hideItem();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+    }
+
+    private void hideItem() {
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        Menu nav_Menu = navigationView.getMenu();
+        nav_Menu.findItem(R.id.nav_logout).setVisible(false);
+        nav_Menu.findItem(R.id.nav_doctor).setVisible(false);
     }
 
     @Override

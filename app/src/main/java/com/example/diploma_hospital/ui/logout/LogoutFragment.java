@@ -2,22 +2,28 @@ package com.example.diploma_hospital.ui.logout;
 
 import androidx.lifecycle.ViewModelProviders;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.example.diploma_hospital.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class LogoutFragment extends Fragment {
 
     private LogoutViewModel mViewModel;
-
+    ProgressDialog progressDialog;
+    Button btnLogout;
     public static LogoutFragment newInstance() {
         return new LogoutFragment();
     }
@@ -33,6 +39,18 @@ public class LogoutFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(LogoutViewModel.class);
         // TODO: Use the ViewModel
+
+        btnLogout = getView().findViewById(R.id.logoutBtn);
+        progressDialog = new ProgressDialog(getContext());
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progressDialog.show();
+                FirebaseAuth.getInstance().signOut();
+                progressDialog.dismiss();
+                Navigation.findNavController(getView()).navigate(R.id.action_nav_logout_to_nav_home);
+            }
+        });
     }
 
 }

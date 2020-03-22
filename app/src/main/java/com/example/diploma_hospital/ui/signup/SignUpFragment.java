@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,17 +25,19 @@ import com.example.diploma_hospital.R;
 import com.example.diploma_hospital.model.CreateUser;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
 
 public class SignUpFragment extends Fragment {
 
     private SignUpViewModel mViewModel;
-    private EditText emailId, password, name, number, confirm;
+    private TextInputLayout emailId, password, name, number, confirm;
     private Button btnSignUp;
     private TextView tvSignIn;
     private FirebaseAuth mFirebaseAuth;
@@ -59,6 +62,7 @@ public class SignUpFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(SignUpViewModel.class);
         mFirebaseAuth = FirebaseAuth.getInstance();
+        progressDialog = new ProgressDialog(getContext());
         user=FirebaseAuth.getInstance().getCurrentUser();
         emailId = Objects.requireNonNull(getView()).findViewById(R.id.editText);
         password = getView().findViewById(R.id.editText2);
@@ -67,7 +71,7 @@ public class SignUpFragment extends Fragment {
         name = getView().findViewById(R.id.editText4);
         number = getView().findViewById(R.id.editText5);
         confirm = getView().findViewById(R.id.editText3);
-
+        reference = FirebaseDatabase.getInstance().getReference().child("Users");
         tvSignIn.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
@@ -79,56 +83,65 @@ public class SignUpFragment extends Fragment {
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String email = emailId.getText().toString();
-                final String tempName = name.getText().toString();
-                final String num = number.getText().toString();
-                final String pwd = password.getText().toString();
-                final String checkPwd = confirm.getText().toString();
+                final String email = emailId.getEditText().getText().toString().trim();
+                final String tempName = name.getEditText().getText().toString().trim();
+                final String num = number.getEditText().getText().toString().trim();
+                final String pwd = password.getEditText().getText().toString().trim();
+                final String checkPwd = confirm.getEditText().getText().toString().trim();
+                Log.d("n:", pwd);
+                Log.d("c:", checkPwd);
                 if (tempName.isEmpty()) {
-                    name.setError("Please, enter your name");
+                    name.setError("Введите имя!");
                     name.requestFocus();
                 } else if (num.isEmpty()) {
-                    number.setError("Please, enter your phone number");
+                    number.setError("Введите свой номер!");
                     number.requestFocus();
                 } else if (email.isEmpty()) {
-                    emailId.setError("Please enter email id");
+                    emailId.setError("Введите почту!");
                     emailId.requestFocus();
                 } else if (pwd.isEmpty()) {
-                    password.setError("Please enter your password");
+                    password.setError("Введите пароль!");
                     password.requestFocus();
                 } else if (checkPwd.isEmpty()) {
-                    confirm.setError("Please, confirm password");
+                    confirm.setError("Введите подтверждение!");
                     confirm.requestFocus();
                 } else if (email.isEmpty() && pwd.isEmpty() && tempName.isEmpty() && num.isEmpty() && checkPwd.isEmpty()) {
-                    Toast.makeText(getContext(), "Fields Are Empty!", Toast.LENGTH_SHORT).show();
-                } else if (!(email.isEmpty() && pwd.isEmpty() && tempName.isEmpty() && num.isEmpty() && checkPwd.isEmpty()) && checkPwd.equals(pwd)) {
+                    Toast.makeText(getContext(), "Заполните все поля!", Toast.LENGTH_SHORT).show();
+                } else if(!Objects.equals(checkPwd, pwd)){
+                    confirm.setError("Пароли не совпадают!");
+                    confirm.requestFocus();
+                }
+                else if (!(email.isEmpty() && pwd.isEmpty() && tempName.isEmpty() && num.isEmpty() && checkPwd.isEmpty()) && checkPwd.equals(pwd)) {
+                    progressDialog.setMessage("Подождите, мы добавляем пользователя...");
+                    progressDialog.show();
                     mFirebaseAuth.createUserWithEmailAndPassword(email, pwd).addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                Navigation.findNavController(Objects.requireNonNull(getView())).navigate(R.id.action_nav_signup_to_nav_notes);
-
-                                /*user = mFirebaseAuth.getCurrentUser();
-                                userId = user.getUid();
+                                userId = mFirebaseAuth.getCurrentUser().getUid();
+                                FirebaseAuth.getInstance().signOut();
                                 CreateUser createUser = new CreateUser(tempName, num, email, pwd, "0", "3", userId);
-                                reference.child("userId").setValue(createUser).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                reference.child(userId).setValue(createUser).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
+                                            progressDialog.dismiss();
                                             Toast.makeText(getContext(), "Пользователь зарегистрирован успешно!", Toast.LENGTH_SHORT).show();
-                                            Navigation.findNavController(Objects.requireNonNull(getView())).navigate(R.id.action_nav_signup_to_nav_notes);
+                                            Navigation.findNavController(Objects.requireNonNull(getView())).navigate(R.id.action_nav_signup_to_nav_login);
                                         } else {
+                                            progressDialog.dismiss();
                                             Toast.makeText(getContext(), "Ошибка соединения, обратитесь в сервис!", Toast.LENGTH_SHORT).show();
                                         }
                                     }
-                                });*/
+                                });
                             } else {
-                                Toast.makeText(getContext(), "SignUp Unsuccessful, Please Try Again", Toast.LENGTH_SHORT).show();
+                                progressDialog.dismiss();
+                                Toast.makeText(getContext(), "Ошибка соединения или данная почта уже занята!", Toast.LENGTH_LONG).show();
                             }
                         }
                     });
                 } else {
-                    Toast.makeText(getContext(), "Error Occurred!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Ошибка соединения, обратитесь в сервис!", Toast.LENGTH_SHORT).show();
 
                 }
             }
