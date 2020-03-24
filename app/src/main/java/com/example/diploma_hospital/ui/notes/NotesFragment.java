@@ -87,8 +87,8 @@ public class NotesFragment extends Fragment {
         refDoctor.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                final String currentId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                 try {
+                final String currentId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     if (dataSnapshot != null) {
                         for (DataSnapshot issue : dataSnapshot.getChildren()) {
                             checkNote = issue.getValue(Note.class);
