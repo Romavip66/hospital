@@ -109,7 +109,7 @@ public class HomeFragment extends Fragment {
                     try {
                         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, categories);
                         spinner.setAdapter(adapter);
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -163,11 +163,13 @@ public class HomeFragment extends Fragment {
                                             e.printStackTrace();
                                         }
                                     }
-                                    Log.d("sizecheck", doctorsList.size()+" ");
+                                    Log.d("sizecheck", doctorsList.size() + " ");
                                     if (!doctorsList.isEmpty()) {
-                                        ArrayAdapter<String> adapterDoctor = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, doctorsList);
-                                        spinnerDoctor.setAdapter(adapterDoctor);
-                                        spinnerDoctor.setVisibility(View.VISIBLE);
+                                        if (getActivity() != null) {
+                                            ArrayAdapter<String> adapterDoctor = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, doctorsList);
+                                            spinnerDoctor.setAdapter(adapterDoctor);
+                                            spinnerDoctor.setVisibility(View.VISIBLE);
+                                        }
                                     } else {
                                         Toast.makeText(getContext(), "Врачи отсуствуют!!!", Toast.LENGTH_SHORT).show();
                                         spinnerDoctor.setVisibility(View.INVISIBLE);
@@ -227,10 +229,10 @@ public class HomeFragment extends Fragment {
                     }
                     c.add(Calendar.DATE, 1);  // number of days to add
                     date = sdf.format(c.getTime());
-                    Note currentNote = new Note(date,tempSelectedUid,tempDoctorId);
+                    Note currentNote = new Note(date, tempSelectedUid, tempDoctorId);
                     notesDatabase.child(date).setValue(currentNote);
                     progressDialog2.dismiss();
-                    Toast.makeText(getContext(),"Вы успешно записались на "+date, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "Вы успешно записались на " + date, Toast.LENGTH_LONG).show();
                 }
             });
         } else {

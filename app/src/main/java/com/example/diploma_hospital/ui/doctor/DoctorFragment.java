@@ -57,7 +57,7 @@ public class DoctorFragment extends Fragment {
     ListAdapter doctorAdapter;
     Note checkNote;
     String num;
-
+    String checkTime;
     public static DoctorFragment newInstance() {
         return new DoctorFragment();
     }
@@ -88,12 +88,13 @@ public class DoctorFragment extends Fragment {
                         for (DataSnapshot issue : dataSnapshot.getChildren()) {
                             checkNote = issue.getValue(Note.class);
                             if (checkNote.getDoctorId().equals(currentId)) {
+                                checkTime = checkNote.getTime();
                                 readData(new MyCallback() {
                                     @Override
                                     public void onCallback(List<NoteView> listNoteView) {
                                         Log.d("zb",doctorTempUser.size()+" ");
                                     }
-                                });
+                                }, checkTime);
                             }
 
                         }
@@ -173,7 +174,7 @@ public class DoctorFragment extends Fragment {
         }
     }
 
-    public void readData(final MyCallback myCallback) {
+    public void readData(final MyCallback myCallback, final String time) {
 
         DatabaseReference refNum = FirebaseDatabase.getInstance().getReference().child("Users").child(checkNote.userId).child("number");
         refNum.addValueEventListener(new ValueEventListener() {
@@ -191,7 +192,8 @@ public class DoctorFragment extends Fragment {
         refUser.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                NoteView nv1 = new NoteView(dataSnapshot.getValue().toString(), checkNote.time, num);
+                Log.d("checkTime", checkNote.time);
+                NoteView nv1 = new NoteView(dataSnapshot.getValue().toString(), time, num);
                 doctorTempUser.add(nv1);
                 myCallback.onCallback(doctorTempUser);
             }
