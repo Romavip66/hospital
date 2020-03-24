@@ -13,18 +13,19 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/logoHeader"
         android:layout_width="107dp"
         android:layout_height="111dp"
         android:contentDescription="@string/nav_header_desc"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:src="@drawable/doctor" />
+        android:src="@drawable/heart_logo" />
 
     <TextView
+        android:id="@+id/userName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="Имя Фамилия"
+        android:text="@string/headerText"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         style="@style/TextAppearance.AppCompat.Medium"/>
 

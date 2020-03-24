@@ -9,7 +9,14 @@
         android:id="@+id/nav_home"
         android:name="com.example.diploma_hospital.ui.home.HomeFragment"
         android:label="Запись к врачу"
-        tools:layout="@layout/fragment_home"/>
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_nav_home_to_nav_login"
+            app:destination="@id/nav_login" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_doctor"
+            app:destination="@id/nav_doctor" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_login"
@@ -31,13 +38,21 @@
         android:id="@+id/nav_doctor"
         android:name="com.example.diploma_hospital.ui.doctor.DoctorFragment"
         android:label="Записи"
-        tools:layout="@layout/doctor_fragment"/>
+        tools:layout="@layout/doctor_fragment">
+        <action
+            android:id="@+id/action_nav_doctor_to_nav_login"
+            app:destination="@id/nav_login" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_notes"
         android:name="com.example.diploma_hospital.ui.notes.NotesFragment"
         android:label="Мои Записи"
-        tools:layout="@layout/notes_fragment"/>
+        tools:layout="@layout/notes_fragment">
+        <action
+            android:id="@+id/action_nav_notes_to_nav_login"
+            app:destination="@id/nav_login" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_logout"
@@ -45,8 +60,8 @@
         android:label="Выйти"
         tools:layout="@layout/logout_fragment">
         <action
-            android:id="@+id/action_nav_logout_to_nav_home"
-            app:destination="@id/nav_home" />
+            android:id="@+id/action_nav_logout_to_nav_login"
+            app:destination="@id/nav_login" />
     </fragment>
 
     <fragment
@@ -54,6 +69,9 @@
         android:name="com.example.diploma_hospital.ui.signup.SignUpFragment"
         android:label="Регитсрация"
         tools:layout="@layout/sign_up_fragment">
+        <action
+            android:id="@+id/action_nav_signup_to_nav_home"
+            app:destination="@id/nav_home" />
         <action
             android:id="@+id/action_nav_signup_to_nav_login"
             app:destination="@id/nav_login" />

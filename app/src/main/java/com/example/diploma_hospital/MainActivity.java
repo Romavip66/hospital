@@ -1,12 +1,16 @@
 package com.example.diploma_hospital;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -36,6 +40,13 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+        NavigationView navView =  findViewById(R.id.nav_view);
+        View headerView = navView.getHeaderView(0);
+        TextView nameCheck = headerView.findViewById(R.id.userName);
+        ImageView imageViewCheck = headerView.findViewById(R.id.logoHeader);
+        nameCheck.setText(getString(R.string.headerText));
+        imageViewCheck.setImageResource(R.drawable.heart_logo);
+
     }
 
     private void hideItem() {
@@ -57,5 +68,14 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        FirebaseAuth.getInstance().signOut();
+        //Navigation.findNavController(getView()).navigate(R.id.action_nav_logout_to_nav_login);
+        finish();
+        //Navigation.findNavController(getView()).navigate(R.id.action_nav_logout_to_nav_login);
     }
 }

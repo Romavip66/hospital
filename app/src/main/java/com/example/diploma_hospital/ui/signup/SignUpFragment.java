@@ -4,6 +4,7 @@ import androidx.annotation.RequiresApi;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -21,6 +22,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.diploma_hospital.MainActivity;
 import com.example.diploma_hospital.R;
 import com.example.diploma_hospital.model.CreateUser;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -72,8 +74,8 @@ public class SignUpFragment extends Fragment {
         number = getView().findViewById(R.id.editText5);
         confirm = getView().findViewById(R.id.editText3);
         reference = FirebaseDatabase.getInstance().getReference().child("Users");
+
         tvSignIn.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View v) {
                 Navigation.findNavController(Objects.requireNonNull(getView())).navigate(R.id.action_nav_signup_to_nav_login);
@@ -119,15 +121,15 @@ public class SignUpFragment extends Fragment {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 userId = mFirebaseAuth.getCurrentUser().getUid();
-                                FirebaseAuth.getInstance().signOut();
-                                CreateUser createUser = new CreateUser(tempName, num, email, pwd, "0", "3", userId);
+                                CreateUser createUser = new CreateUser( num,userId, pwd,"3", tempName,  "0", email);
                                 reference.child(userId).setValue(createUser).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
                                             progressDialog.dismiss();
                                             Toast.makeText(getContext(), "Пользователь зарегистрирован успешно!", Toast.LENGTH_SHORT).show();
-                                            Navigation.findNavController(Objects.requireNonNull(getView())).navigate(R.id.action_nav_signup_to_nav_login);
+                                            progressDialog.dismiss();
+                                            Navigation.findNavController(Objects.requireNonNull(getView())).navigate(R.id.action_nav_signup_to_nav_home);
                                         } else {
                                             progressDialog.dismiss();
                                             Toast.makeText(getContext(), "Ошибка соединения, обратитесь в сервис!", Toast.LENGTH_SHORT).show();

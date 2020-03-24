@@ -4,26 +4,33 @@ import androidx.annotation.RequiresApi;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.diploma_hospital.MainActivity;
 import com.example.diploma_hospital.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -45,6 +52,7 @@ public class LoginFragment extends Fragment {
     FirebaseAuth mFirebaseAuth;
     ProgressDialog progressDialog;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
+
     public static LoginFragment newInstance() {
         return new LoginFragment();
     }
@@ -74,74 +82,44 @@ public class LoginFragment extends Fragment {
             }
         });
 
-        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser mFirebaseUser = mFirebaseAuth.getCurrentUser();
-                if( mFirebaseUser != null ){
-                    final String userId = mFirebaseAuth.getCurrentUser().getUid();
-                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
-                    ref.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            String roleId = dataSnapshot.child(userId).child("roleId").getValue(String.class);
-                            if(roleId.equals("3")){
-                                progressDialog.dismiss();
-                                Navigation.findNavController(getView()).navigate(R.id.action_nav_login_to_nav_home);
-                            }
-                            else if(roleId.equals("2")){
-                                progressDialog.dismiss();
-                                Navigation.findNavController(getView()).navigate(R.id.action_nav_login_to_nav_doctor);
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                        }
-                    });
-                }
-                else{
-                    //Toast.makeText(getContext(),"Please Login",Toast.LENGTH_SHORT).show();
-                }
-            }
-        };
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String email = emailId.getEditText().getText().toString().trim();
                 String pwd = password.getEditText().getText().toString().trim();
-                if(email.isEmpty()){
+                if (email.isEmpty()) {
                     emailId.setError("Введите свою почту!");
                     emailId.requestFocus();
-                }
-                else  if(pwd.isEmpty()){
+                } else if (pwd.isEmpty()) {
                     password.setError("Введите свой пароль!");
                     password.requestFocus();
-                }
-                else  if(email.isEmpty() && pwd.isEmpty()){
-                    Toast.makeText(getContext(),"Заполните поля!",Toast.LENGTH_SHORT).show();
-                }
-                else  if(!(email.isEmpty() && pwd.isEmpty())){
+                } else if (email.isEmpty() && pwd.isEmpty()) {
+                    Toast.makeText(getContext(), "Заполните поля!", Toast.LENGTH_SHORT).show();
+                } else if (!(email.isEmpty() && pwd.isEmpty())) {
+                    progressDialog.setMessage("Подождите...");
                     progressDialog.show();
                     mFirebaseAuth.signInWithEmailAndPassword(email, pwd).addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            if(!task.isSuccessful()){
+                            if (!task.isSuccessful()) {
                                 progressDialog.dismiss();
-                                Toast.makeText(getContext(),"Ошибка входа, Повторите попытку",Toast.LENGTH_SHORT).show();
-                            }
-                            else{
+                                Toast.makeText(getContext(), "Ошибка входа, Повторите попытку", Toast.LENGTH_SHORT).show();
+                            } else {
                                 final String userId = mFirebaseAuth.getCurrentUser().getUid();
                                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
                                 ref.addValueEventListener(new ValueEventListener() {
+                                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         String roleId = dataSnapshot.child(userId).child("roleId").getValue(String.class);
-                                        if(roleId.equals("3")){
+                                        if (roleId.equals("3")) {
                                             progressDialog.dismiss();
-                                            Navigation.findNavController(getView()).navigate(R.id.action_nav_login_to_nav_home);
-                                        }
-                                        else if(roleId.equals("2")){
+                                            try {
+                                                Navigation.findNavController(getView()).navigate(R.id.action_nav_login_to_nav_home);
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                        } else if (roleId.equals("2")) {
                                             progressDialog.dismiss();
                                             Navigation.findNavController(getView()).navigate(R.id.action_nav_login_to_nav_doctor);
                                         }
@@ -154,10 +132,9 @@ public class LoginFragment extends Fragment {
                             }
                         }
                     });
-                }
-                else{
+                } else {
                     progressDialog.dismiss();
-                    Toast.makeText(getContext(),"Возникла ошибка...",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Возникла ошибка...", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -165,16 +142,31 @@ public class LoginFragment extends Fragment {
     }
 
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
+        Menu nav_Menu = navigationView.getMenu();
+        NavigationView navView = getActivity().findViewById(R.id.nav_view);
+        View headerView = navView.getHeaderView(0);
+        TextView nameCheck = headerView.findViewById(R.id.userName);
+        ImageView imageViewCheck = headerView.findViewById(R.id.logoHeader);
+        nameCheck.setText(getString(R.string.headerText));
+        imageViewCheck.setImageResource(R.drawable.heart_logo);
+        nav_Menu.findItem(R.id.nav_doctor).setVisible(false);
+        nav_Menu.findItem(R.id.nav_logout).setVisible(false);
+        nav_Menu.findItem(R.id.nav_login).setVisible(true);
+        nav_Menu.findItem(R.id.nav_home).setVisible(true);
+        nav_Menu.findItem(R.id.nav_notes).setVisible(true);
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            try {
+                Navigation.findNavController(getView()).navigate(R.id.action_nav_login_to_nav_home);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
-    }
+
 }
