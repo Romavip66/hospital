@@ -323,6 +323,8 @@ public class HomeFragment extends Fragment {
                                 if (dataSnapshot.child("doctorId").equals(tempDoctorId) && dataSnapshot.child("time").equals(finalTime)) {
                                     Toast.makeText(getContext(), "Данное время уже занято!", Toast.LENGTH_SHORT).show();
                                     progressDialog2.dismiss();
+                                }else {
+                                    progressDialog2.dismiss();
                                 }
                             } else {
                                 List<String> forCheck = new ArrayList<>();
@@ -350,6 +352,7 @@ public class HomeFragment extends Fragment {
                                     progressDialog2.dismiss();
                                     Toast.makeText(getContext(), "Данное время уже занято!", Toast.LENGTH_SHORT).show();
                                 }
+                                progressDialog2.dismiss();
 
                             }
                         }
