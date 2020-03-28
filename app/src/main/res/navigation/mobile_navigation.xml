@@ -3,8 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
-
+    app:startDestination="@+id/nav_first">
+    <fragment
+        android:id="@+id/nav_first"
+        android:name="com.example.diploma_hospital.ui.first.FirstFragment"
+        android:label="Дипломная работа"
+        tools:layout="@layout/first_fragment"/>
     <fragment
         android:id="@+id/nav_home"
         android:name="com.example.diploma_hospital.ui.home.HomeFragment"

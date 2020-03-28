@@ -6,6 +6,9 @@
     <color name="facebookBlue">#3F5996</color>
     <color name="twitterBlue">#29C5F6</color>
     <color name="googleRed">#D03E2F</color>
+    <color name="cardBack">#32CA52</color>
+    <color name="cardText">#0F1210</color>
+    <color name="cardBackPassed">#757D75</color>
     <color name="background">#F6F6F6 </color>
     <color name="itemBackground">#dcdcdc</color>
     <color name="white">#FFFFFF</color>

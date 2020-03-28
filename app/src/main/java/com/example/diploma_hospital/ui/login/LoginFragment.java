@@ -121,7 +121,11 @@ public class LoginFragment extends Fragment {
                                             }
                                         } else if (roleId.equals("2")) {
                                             progressDialog.dismiss();
-                                            Navigation.findNavController(getView()).navigate(R.id.action_nav_login_to_nav_doctor);
+                                            try {
+                                                Navigation.findNavController(getView()).navigate(R.id.action_nav_login_to_nav_doctor);
+                                            }catch (Exception e){
+                                            e.printStackTrace();
+                                            }
                                         }
                                     }
 

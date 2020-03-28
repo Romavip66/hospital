@@ -1,10 +1,13 @@
 package com.example.diploma_hospital.ui.home;
 
 import androidx.annotation.RequiresApi;
+import androidx.cardview.widget.CardView;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import android.service.autofill.Dataset;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,9 +30,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.diploma_hospital.MainActivity;
@@ -56,9 +62,10 @@ import java.util.Objects;
 public class HomeFragment extends Fragment {
 
     private HomeViewModel mViewModel;
+    CardView cardView;
     Button btnNote;
     FirebaseAuth mFirebaseAuth;
-    TextView name;
+    TextView name, tvTime;
     ImageView imageView;
     ProgressDialog progressDialog;
     AlertDialog.Builder builder;
@@ -67,6 +74,12 @@ public class HomeFragment extends Fragment {
     ProgressDialog progressDialog2;
     DatabaseReference notesDatabase;
     Note note;
+    String did;
+    Calendar c;
+    String curDate, curTime, finalTime;
+    List<String> dateAndTime = new ArrayList<>();
+    DatePickerDialog datePickerDialog;
+    TimePickerDialog timePickerDialog;
     private boolean isSpinnerTouched = false;
     private boolean isDoctorTouched = false;
 
@@ -86,6 +99,10 @@ public class HomeFragment extends Fragment {
         mViewModel = ViewModelProviders.of(this).get(HomeViewModel.class);
         mFirebaseAuth = FirebaseAuth.getInstance();
         notesDatabase = FirebaseDatabase.getInstance().getReference("Notes");
+        tvTime = getView().findViewById(R.id.tvTimeCheck);
+        tvTime.setVisibility(View.INVISIBLE);
+        cardView = getView().findViewById(R.id.cardViewCheck);
+        cardView.setVisibility(View.INVISIBLE);
         spinner = (Spinner) getView().findViewById(R.id.spinnerCategory);
         spinnerDoctor = (Spinner) getView().findViewById(R.id.spinnerDoctor);
         btnNote = getView().findViewById(R.id.btnNote);
@@ -102,6 +119,7 @@ public class HomeFragment extends Fragment {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     final List<String> categories = new ArrayList<String>();
+                    categories.add("Выберите категорию");
                     for (DataSnapshot areaSnapshot : dataSnapshot.getChildren()) {
                         String category = areaSnapshot.getValue(String.class);
                         categories.add(category);
@@ -152,6 +170,7 @@ public class HomeFragment extends Fragment {
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     final List<String> doctorsList = new ArrayList<String>();
                                     final List<CreateUser> doctorTempUser = new ArrayList<CreateUser>();
+                                    doctorsList.add("Выберите врача");
                                     for (DataSnapshot issue : dataSnapshot.getChildren()) {
                                         try {
                                             CreateUser checkDoctor = issue.getValue(CreateUser.class);
@@ -180,15 +199,88 @@ public class HomeFragment extends Fragment {
                                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                                             if (!isDoctorTouched) return;
                                             else {
+                                                c = Calendar.getInstance();
+                                                int day = c.get(Calendar.DAY_OF_MONTH);
+                                                final int month = c.get(Calendar.MONTH);
+                                                int year = c.get(Calendar.YEAR);
+                                                final int hours = c.get(Calendar.HOUR_OF_DAY);
+                                                final int mins = c.get(Calendar.MINUTE);
+                                                datePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+                                                    @Override
+                                                    public void onDateSet(DatePicker view, int myear, int mmonth, int mdayOfMonth) {
+                                                        SimpleDateFormat simpledateformat = new SimpleDateFormat("EEEE");
+                                                        Date date = new Date(myear, mmonth, mdayOfMonth - 1);
+                                                        final String dayOfWeek = simpledateformat.format(date);
+                                                        int month1 = mmonth + 1;
+
+                                                        if (month1 < 10) {
+                                                            curDate = (mdayOfMonth + "-" + 0 + month1 + "-" + myear);
+                                                        } else if (month1 >= 10) {
+                                                            curDate = (mdayOfMonth + "-" + month1 + "-" + myear);
+                                                        }
+                                                        timePickerDialog = new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
+                                                            @Override
+                                                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+
+                                                                if (minute < 10) {
+                                                                    if (hourOfDay < 10) {
+                                                                        String cor = "0" + hourOfDay;
+                                                                        curTime = (cor + ":" + 0 + minute);
+                                                                    } else {
+                                                                        curTime = (hourOfDay + ":" + 0 + minute);
+                                                                    }
+                                                                }
+                                                                else {
+                                                                    if (hourOfDay < 10) {
+                                                                        String cor = "0" + hourOfDay;
+                                                                        curTime = (cor + ":" + minute);
+                                                                    } else {
+                                                                        curTime = (hourOfDay + ":" + minute);
+                                                                    }
+                                                                }
+                                                                finalTime = (curDate + " " + curTime);
+                                                                if (hourOfDay > 18 || hourOfDay < 9 || hourOfDay > 12 && hourOfDay < 14 || dayOfWeek.equals("суббота") || dayOfWeek.equals("воскресенье")) {
+                                                                    Toast.makeText(getContext(), "Выберите рабочее время!", Toast.LENGTH_SHORT).show();
+                                                                } else {
+                                                                    tvTime.setText(finalTime);
+                                                                    tvTime.setVisibility(View.VISIBLE);
+                                                                    cardView.setVisibility(View.VISIBLE);
+                                                                    btnNote.setVisibility(View.VISIBLE);
+                                                                }
+                                                            }
+                                                        }, hours, mins, false);
+                                                        timePickerDialog.setCanceledOnTouchOutside(false);
+                                                        timePickerDialog.show();
+                                                    }
+                                                }, year, month, day);
+                                                datePickerDialog.updateDate(year, month, day);
+                                                datePickerDialog.setCanceledOnTouchOutside(false);
                                                 final String selectedDoctor = parent.getItemAtPosition(position).toString();
                                                 if (!selectedDoctor.isEmpty()) {
                                                     for (CreateUser cu : doctorTempUser) {
                                                         if (selectedDoctor.equals(cu.getName())) {
+                                                            did = cu.getUid();
                                                             note = new Note("0", mFirebaseAuth.getCurrentUser().getUid(), cu.getUid());
-                                                            btnNote.setVisibility(View.VISIBLE);
+                                                            datePickerDialog.show();
                                                         }
                                                     }// do your stuff
                                                 }
+                                                DatabaseReference dbzb = FirebaseDatabase.getInstance().getReference("Notes");
+                                                dbzb.addValueEventListener(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                        for (DataSnapshot issue : dataSnapshot.getChildren()) {
+                                                            if (did.equals(issue.child("doctorId").getValue().toString())) {
+                                                                dateAndTime.add(issue.child("time").getValue().toString());
+                                                            }
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                    }
+                                                });
                                             }
                                         } // to close the onItemSelected
 
@@ -217,22 +309,57 @@ public class HomeFragment extends Fragment {
                 public void onClick(View v) {
                     progressDialog2.setMessage("Подождите...");
                     progressDialog2.show();
-                    String tempDoctorId = note.doctorId;
+                    final String tempDoctorId = note.doctorId;
                     String tempSelectedUid = note.userId;
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy HH:mm");
-                    String date = sdf.format(new Date());
-                    Calendar c = Calendar.getInstance();
-                    try {
-                        c.setTime(sdf.parse(date));
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                    c.add(Calendar.DATE, 1);  // number of days to add
-                    date = sdf.format(c.getTime());
-                    Note currentNote = new Note(date, tempSelectedUid, tempDoctorId);
-                    notesDatabase.child(date).setValue(currentNote);
-                    progressDialog2.dismiss();
-                    Toast.makeText(getContext(), "Вы успешно записались на " + date, Toast.LENGTH_LONG).show();
+                    final String childName = finalTime + "@" + tempDoctorId;
+                    final Note currentNote = new Note(finalTime, tempSelectedUid, tempDoctorId);
+
+
+                    DatabaseReference checkDb = FirebaseDatabase.getInstance().getReference("Notes").child(childName);
+                    checkDb.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                if (dataSnapshot.child("doctorId").equals(tempDoctorId) && dataSnapshot.child("time").equals(finalTime)) {
+                                    Toast.makeText(getContext(), "Данное время уже занято!", Toast.LENGTH_SHORT).show();
+                                    progressDialog2.dismiss();
+                                }
+                            } else {
+                                List<String> forCheck = new ArrayList<>();
+                                String str = finalTime;
+                                String[] arrOfStr = str.split(" ", 2);
+                                String[] arr2 = arrOfStr[1].split(":", 2);
+                                String checkForDate = arrOfStr[0];
+                                String checkForHour = arr2[0];
+                                for (int i = 0; i < dateAndTime.size(); i++) {
+                                    String[] a1 = dateAndTime.get(i).split(" ", 2);
+                                    String[] a2 = a1[1].split(":", 2);
+                                    String date1 = a1[0];
+                                    String hour = a2[0];
+                                    if (checkForDate.equals(date1) && checkForHour.equals(hour)) {
+                                        forCheck.add("est");
+                                    }
+                                }
+                                if (forCheck.isEmpty()) {
+                                    notesDatabase.child(childName).setValue(currentNote);
+                                    progressDialog2.dismiss();
+                                    Toast.makeText(getContext(), "Вы успешно записались на " + finalTime, Toast.LENGTH_SHORT).show();
+                                    //break;
+                                }
+                                else {
+                                    progressDialog2.dismiss();
+                                    Toast.makeText(getContext(), "Данное время уже занято!", Toast.LENGTH_SHORT).show();
+                                }
+
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
                 }
             });
         } else {
@@ -295,27 +422,6 @@ public class HomeFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-      /*  try {
-            final String currentLoggedUid = mFirebaseAuth.getCurrentUser().getUid();
-            DatabaseReference refUserCheck = FirebaseDatabase.getInstance().getReference().child("Users");
-            refUserCheck.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (currentLoggedUid.equals(dataSnapshot.getValue())) {
-                        if (dataSnapshot.child(currentLoggedUid).child("roleId").equals("2")) {
-                            Navigation.findNavController(getView()).navigate(R.id.action_nav_home_to_nav_doctor);
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
     }
 
 }

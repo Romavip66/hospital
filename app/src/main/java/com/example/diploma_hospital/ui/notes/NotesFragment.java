@@ -37,6 +37,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class NotesFragment extends Fragment {
@@ -45,7 +46,8 @@ public class NotesFragment extends Fragment {
     FirebaseAuth mFirebaseAuth;
     TextView name;
     ImageView imageView;
-    AlertDialog.Builder builder;List<NoteView> doctorTempUser = new ArrayList<NoteView>();
+    AlertDialog.Builder builder;
+    List<NoteView> doctorTempUser = new ArrayList<NoteView>();
     List<String> nsw = new ArrayList<String>();
     String docId;
     RecyclerView recyclerView;
@@ -55,6 +57,7 @@ public class NotesFragment extends Fragment {
     Note checkNote;
     String num;
     String checkTime;
+
     public static NotesFragment newInstance() {
         return new NotesFragment();
     }
@@ -87,8 +90,8 @@ public class NotesFragment extends Fragment {
         refDoctor.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                final String currentId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                 try {
+                    final String currentId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     if (dataSnapshot != null) {
                         for (DataSnapshot issue : dataSnapshot.getChildren()) {
                             checkNote = issue.getValue(Note.class);
@@ -97,7 +100,7 @@ public class NotesFragment extends Fragment {
                                 readData(new MyCallback() {
                                     @Override
                                     public void onCallback(List<NoteView> listNoteView) {
-                                        Log.d("zb",doctorTempUser.size()+" ");
+                                        Log.d("zb", doctorTempUser.size() + " ");
                                     }
                                 }, checkTime);
                             }
@@ -107,9 +110,14 @@ public class NotesFragment extends Fragment {
                     writeData(new MyCallback() {
                         @Override
                         public void onCallback(List<NoteView> listNoteView) {
-                            if (getActivity()!=null){
+                            if (getActivity() != null) {
+                                ProgressDialog pd = new ProgressDialog(getContext());
+                                pd.setMessage("Загрузка...");
+                                pd.show();
+                                Collections.reverse(listNoteView);
                                 doctorAdapter = new ListAdapter(listNoteView, getActivity());
                                 recyclerView.setAdapter(doctorAdapter);
+                                pd.dismiss();
                             }
                         }
                     });
@@ -134,24 +142,29 @@ public class NotesFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         builder = new AlertDialog.Builder(getContext());
-        NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
-        Menu nav_Menu = navigationView.getMenu();
-        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-            nav_Menu.findItem(R.id.nav_logout).setVisible(false);
-            nav_Menu.findItem(R.id.nav_login).setVisible(true);
-            builder.setCancelable(false)
-                    .setPositiveButton("Войти", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            Navigation.findNavController(getView()).navigate(R.id.action_nav_notes_to_nav_login);
-                        }
-                    });
-            //Creating dialog box
-            AlertDialog alert = builder.create();
-            //Setting the title manually
-            alert.setTitle("Авторизируйтесь для данного действия!");
-            alert.show();
+        try {
+            NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
+            Menu nav_Menu = navigationView.getMenu();
+            if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+                nav_Menu.findItem(R.id.nav_logout).setVisible(false);
+                nav_Menu.findItem(R.id.nav_login).setVisible(true);
+                builder.setCancelable(false)
+                        .setPositiveButton("Войти", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Navigation.findNavController(getView()).navigate(R.id.action_nav_notes_to_nav_login);
+                            }
+                        });
+                //Creating dialog box
+                AlertDialog alert = builder.create();
+                //Setting the title manually
+                alert.setTitle("Авторизируйтесь для данного действия!");
+                alert.show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
+
     public void readData(final MyCallback myCallback, final String time) {
 
         DatabaseReference refNum = FirebaseDatabase.getInstance().getReference().child("Users").child(checkNote.doctorId).child("number");
@@ -189,7 +202,7 @@ public class NotesFragment extends Fragment {
         refUser.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d("zb2",doctorTempUser.size()+" ");
+                Log.d("zb2", doctorTempUser.size() + " ");
 
                 myCallback.onCallback(doctorTempUser);
             }
@@ -202,7 +215,7 @@ public class NotesFragment extends Fragment {
 
     }
 
-    public interface MyCallback{
+    public interface MyCallback {
         void onCallback(List<NoteView> listNoteView);
     }
 

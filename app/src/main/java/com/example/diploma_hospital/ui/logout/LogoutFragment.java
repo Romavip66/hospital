@@ -61,7 +61,6 @@ public class LogoutFragment extends Fragment {
                         | Intent.FLAG_ACTIVITY_CLEAR_TOP
                         | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
-                getActivity().finish();
                 progressDialog.dismiss();
             }
         });

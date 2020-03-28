@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_login, R.id.nav_doctor, R.id.nav_notes, R.id.nav_logout, R.id.nav_signup)
+                R.id.nav_home, R.id.nav_login, R.id.nav_doctor, R.id.nav_notes, R.id.nav_logout, R.id.nav_signup,  R.id.nav_first)
                 .setDrawerLayout(drawer)
                 .build();
         hideItem();
@@ -54,14 +54,16 @@ public class MainActivity extends AppCompatActivity {
         Menu nav_Menu = navigationView.getMenu();
         nav_Menu.findItem(R.id.nav_logout).setVisible(false);
         nav_Menu.findItem(R.id.nav_doctor).setVisible(false);
+        nav_Menu.findItem(R.id.nav_home).setVisible(false);
+        nav_Menu.findItem(R.id.nav_notes).setVisible(false);
     }
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
-    }
+    }*/
 
     @Override
     public boolean onSupportNavigateUp() {
