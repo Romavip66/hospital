@@ -59,6 +59,7 @@ public class DoctorFragment extends Fragment {
     Note checkNote;
     String num;
     String checkTime;
+
     public static DoctorFragment newInstance() {
         return new DoctorFragment();
     }
@@ -83,40 +84,44 @@ public class DoctorFragment extends Fragment {
         refDoctor.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                final String currentId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                 try {
-                    if (dataSnapshot != null) {
-                        for (DataSnapshot issue : dataSnapshot.getChildren()) {
-                            checkNote = issue.getValue(Note.class);
-                            if (checkNote.getDoctorId().equals(currentId)) {
-                                checkTime = checkNote.getTime();
-                                readData(new MyCallback() {
-                                    @Override
-                                    public void onCallback(List<NoteView> listNoteView) {
-                                        Log.d("zb",doctorTempUser.size()+" ");
-                                    }
-                                }, checkTime);
+                    final String currentId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    try {
+                        if (dataSnapshot != null) {
+                            for (DataSnapshot issue : dataSnapshot.getChildren()) {
+                                checkNote = issue.getValue(Note.class);
+                                if (checkNote.getDoctorId().equals(currentId)) {
+                                    checkTime = checkNote.getTime();
+                                    readData(new MyCallback() {
+                                        @Override
+                                        public void onCallback(List<NoteView> listNoteView) {
+                                            Log.d("zb", doctorTempUser.size() + " ");
+                                        }
+                                    }, checkTime);
+                                }
+
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    writeData(new MyCallback() {
+                        @Override
+                        public void onCallback(List<NoteView> listNoteView) {
+                            try {
+                                Collections.reverse(listNoteView);
+                                doctorAdapter = new ListAdapter(listNoteView, getActivity());
+                                recyclerView.setAdapter(doctorAdapter);
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
 
                         }
-                    }
-                } catch (Exception e) {
+                    });
+                }catch (Exception e){
                     e.printStackTrace();
                 }
-                writeData(new MyCallback() {
-                    @Override
-                    public void onCallback(List<NoteView> listNoteView) {
-                        try {
-                            Collections.reverse(listNoteView);
-                            doctorAdapter = new ListAdapter(listNoteView, getActivity());
-                            recyclerView.setAdapter(doctorAdapter);
-
-                        }catch (Exception e){
-                            e.printStackTrace();
-                        }
-
-                    }
-                });
             }
 
             @Override
@@ -200,9 +205,14 @@ public class DoctorFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.d("checkTime", checkNote.time);
-                NoteView nv1 = new NoteView(dataSnapshot.getValue().toString(), time, num);
-                doctorTempUser.add(nv1);
-                myCallback.onCallback(doctorTempUser);
+                try {
+                    String curid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    NoteView nv1 = new NoteView(dataSnapshot.getValue().toString(), time, num, curid);
+                    doctorTempUser.add(nv1);
+                    myCallback.onCallback(doctorTempUser);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -218,7 +228,7 @@ public class DoctorFragment extends Fragment {
         refUser.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d("zb2",doctorTempUser.size()+" ");
+                Log.d("zb2", doctorTempUser.size() + " ");
 
                 myCallback.onCallback(doctorTempUser);
             }
@@ -231,7 +241,7 @@ public class DoctorFragment extends Fragment {
 
     }
 
-    public interface MyCallback{
+    public interface MyCallback {
         void onCallback(List<NoteView> listNoteView);
     }
 

@@ -200,9 +200,9 @@ public class HomeFragment extends Fragment {
                                             if (!isDoctorTouched) return;
                                             else {
                                                 c = Calendar.getInstance();
-                                                int day = c.get(Calendar.DAY_OF_MONTH);
+                                                final int day = c.get(Calendar.DAY_OF_MONTH);
                                                 final int month = c.get(Calendar.MONTH);
-                                                int year = c.get(Calendar.YEAR);
+                                                final int year = c.get(Calendar.YEAR);
                                                 final int hours = c.get(Calendar.HOUR_OF_DAY);
                                                 final int mins = c.get(Calendar.MINUTE);
                                                 datePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
@@ -214,9 +214,20 @@ public class HomeFragment extends Fragment {
                                                         int month1 = mmonth + 1;
 
                                                         if (month1 < 10) {
-                                                            curDate = (mdayOfMonth + "-" + 0 + month1 + "-" + myear);
-                                                        } else if (month1 >= 10) {
-                                                            curDate = (mdayOfMonth + "-" + month1 + "-" + myear);
+                                                            if (mdayOfMonth < 10) {
+                                                                String added = "0"+mdayOfMonth;
+                                                                curDate = ( added + "-" + 0 + month1 + "-" + myear);
+                                                            } else {
+                                                                curDate = (mdayOfMonth + "-" + 0 + month1 + "-" + myear);
+                                                            }
+                                                        }
+                                                        if (month1 >= 10) {
+                                                            if (mdayOfMonth < 10) {
+                                                                String added = "0"+mdayOfMonth;
+                                                                curDate = (added + "-" + month1 + "-" + myear);
+                                                            } else {
+                                                                curDate = (mdayOfMonth + "-" + month1 + "-" + myear);
+                                                            }
                                                         }
                                                         timePickerDialog = new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
                                                             @Override
@@ -229,8 +240,7 @@ public class HomeFragment extends Fragment {
                                                                     } else {
                                                                         curTime = (hourOfDay + ":" + 0 + minute);
                                                                     }
-                                                                }
-                                                                else {
+                                                                } else {
                                                                     if (hourOfDay < 10) {
                                                                         String cor = "0" + hourOfDay;
                                                                         curTime = (cor + ":" + minute);
@@ -241,6 +251,8 @@ public class HomeFragment extends Fragment {
                                                                 finalTime = (curDate + " " + curTime);
                                                                 if (hourOfDay > 18 || hourOfDay < 9 || hourOfDay > 12 && hourOfDay < 14 || dayOfWeek.equals("суббота") || dayOfWeek.equals("воскресенье")) {
                                                                     Toast.makeText(getContext(), "Выберите рабочее время!", Toast.LENGTH_SHORT).show();
+                                                                    //datePickerDialog.updateDate(year, month, day);
+                                                                    datePickerDialog.show();
                                                                 } else {
                                                                     tvTime.setText(finalTime);
                                                                     tvTime.setVisibility(View.VISIBLE);
@@ -270,8 +282,14 @@ public class HomeFragment extends Fragment {
                                                     @Override
                                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                         for (DataSnapshot issue : dataSnapshot.getChildren()) {
-                                                            if (did.equals(issue.child("doctorId").getValue().toString())) {
-                                                                dateAndTime.add(issue.child("time").getValue().toString());
+                                                            try {
+
+
+                                                                if (did.equals(issue.child("doctorId").getValue().toString())) {
+                                                                    dateAndTime.add(issue.child("time").getValue().toString());
+                                                                }
+                                                            } catch (Exception e) {
+                                                                e.printStackTrace();
                                                             }
                                                         }
                                                     }
@@ -321,9 +339,14 @@ public class HomeFragment extends Fragment {
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (dataSnapshot.exists()) {
                                 if (dataSnapshot.child("doctorId").equals(tempDoctorId) && dataSnapshot.child("time").equals(finalTime)) {
-                                    Toast.makeText(getContext(), "Данное время уже занято!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), "Данное время уже занято!", Toast.LENGTH_LONG).show();
+                                    int day = c.get(Calendar.DAY_OF_MONTH);
+                                    int month = c.get(Calendar.MONTH);
+                                    int year = c.get(Calendar.YEAR);
+                                    //datePickerDialog.updateDate(year, month, day);
+                                    datePickerDialog.show();
                                     progressDialog2.dismiss();
-                                }else {
+                                } else {
                                     progressDialog2.dismiss();
                                 }
                             } else {
@@ -347,10 +370,14 @@ public class HomeFragment extends Fragment {
                                     progressDialog2.dismiss();
                                     Toast.makeText(getContext(), "Вы успешно записались на " + finalTime, Toast.LENGTH_SHORT).show();
                                     //break;
-                                }
-                                else {
+                                } else {
+                                    Toast.makeText(getContext(), "Данное время уже занято!", Toast.LENGTH_LONG).show();
+                                    int day = c.get(Calendar.DAY_OF_MONTH);
+                                    int month = c.get(Calendar.MONTH);
+                                    int year = c.get(Calendar.YEAR);
+                                    //datePickerDialog.updateDate(year, month, day);
+                                    datePickerDialog.show();
                                     progressDialog2.dismiss();
-                                    Toast.makeText(getContext(), "Данное время уже занято!", Toast.LENGTH_SHORT).show();
                                 }
                                 progressDialog2.dismiss();
 
@@ -383,6 +410,8 @@ public class HomeFragment extends Fragment {
         Menu nav_Menu = navigationView.getMenu();
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            nav_Menu.findItem(R.id.nav_comments).setVisible(true);
+            nav_Menu.findItem(R.id.nav_analyzes).setVisible(true);
             nav_Menu.findItem(R.id.nav_logout).setVisible(true);
             nav_Menu.findItem(R.id.nav_login).setVisible(false);
             NavigationView navView = getActivity().findViewById(R.id.nav_view);
@@ -405,6 +434,8 @@ public class HomeFragment extends Fragment {
                 }
             });
         } else {
+            nav_Menu.findItem(R.id.nav_comments).setVisible(false);
+            nav_Menu.findItem(R.id.nav_analyzes).setVisible(false);
             nav_Menu.findItem(R.id.nav_logout).setVisible(false);
             nav_Menu.findItem(R.id.nav_login).setVisible(true);
             builder.setCancelable(false)

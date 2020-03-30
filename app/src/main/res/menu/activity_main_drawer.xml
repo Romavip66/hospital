@@ -17,6 +17,14 @@
             android:icon="@drawable/ic_library_books"
             android:title="Мои Записи"/>
         <item
+            android:id="@+id/nav_analyzes"
+            android:icon="@drawable/ic_file_download"
+            android:title="Мои Анализы"/>
+        <item
+            android:id="@+id/nav_comments"
+            android:icon="@drawable/ic_question_answer"
+            android:title="Список Врачей"/>
+        <item
             android:id="@+id/nav_login"
             android:icon="@drawable/ic_lock_outline"
             android:title="Войти"/>
@@ -24,5 +32,6 @@
             android:id="@+id/nav_logout"
             android:icon="@drawable/ic_exit_to_app"
             android:title="Выйти"/>
+
     </group>
 </menu>

@@ -121,7 +121,7 @@ public class SignUpFragment extends Fragment {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 userId = mFirebaseAuth.getCurrentUser().getUid();
-                                CreateUser createUser = new CreateUser( num,userId, pwd,"3", tempName,  "0", email);
+                                CreateUser createUser = new CreateUser( tempName,num,email,pwd,"0","3", userId, "0");
                                 reference.child(userId).setValue(createUser).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {

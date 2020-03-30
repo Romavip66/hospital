@@ -9,18 +9,7 @@ public class CreateUser
     public String category;
     public String roleId;
     public String uid;
-
-    public CreateUser(){}
-
-    public CreateUser(String number, String uid, String password, String roleId, String name, String category, String email) {
-        this.name = name;
-        this.number=number;
-        this.email = email;
-        this.password = password;
-        this.category = category;
-        this.roleId = roleId;
-        this.uid = uid;
-    }
+    public String description;
 
     public String getName() {
         return name;
@@ -76,5 +65,27 @@ public class CreateUser
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public CreateUser() {
+    }
+
+    public CreateUser(String name, String number, String email, String password, String category, String roleId, String uid, String description) {
+        this.name = name;
+        this.number = number;
+        this.email = email;
+        this.password = password;
+        this.category = category;
+        this.roleId = roleId;
+        this.uid = uid;
+        this.description = description;
     }
 }

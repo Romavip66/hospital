@@ -123,8 +123,8 @@ public class LoginFragment extends Fragment {
                                             progressDialog.dismiss();
                                             try {
                                                 Navigation.findNavController(getView()).navigate(R.id.action_nav_login_to_nav_doctor);
-                                            }catch (Exception e){
-                                            e.printStackTrace();
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
                                             }
                                         }
                                     }
@@ -150,25 +150,29 @@ public class LoginFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
-        Menu nav_Menu = navigationView.getMenu();
-        NavigationView navView = getActivity().findViewById(R.id.nav_view);
-        View headerView = navView.getHeaderView(0);
-        TextView nameCheck = headerView.findViewById(R.id.userName);
-        ImageView imageViewCheck = headerView.findViewById(R.id.logoHeader);
-        nameCheck.setText(getString(R.string.headerText));
-        imageViewCheck.setImageResource(R.drawable.heart_logo);
-        nav_Menu.findItem(R.id.nav_doctor).setVisible(false);
-        nav_Menu.findItem(R.id.nav_logout).setVisible(false);
-        nav_Menu.findItem(R.id.nav_login).setVisible(true);
-        nav_Menu.findItem(R.id.nav_home).setVisible(true);
-        nav_Menu.findItem(R.id.nav_notes).setVisible(true);
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            try {
-                Navigation.findNavController(getView()).navigate(R.id.action_nav_login_to_nav_home);
-            } catch (Exception e) {
-                e.printStackTrace();
+        try {
+            NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
+            Menu nav_Menu = navigationView.getMenu();
+            NavigationView navView = getActivity().findViewById(R.id.nav_view);
+            View headerView = navView.getHeaderView(0);
+            TextView nameCheck = headerView.findViewById(R.id.userName);
+            ImageView imageViewCheck = headerView.findViewById(R.id.logoHeader);
+            nameCheck.setText(getString(R.string.headerText));
+            imageViewCheck.setImageResource(R.drawable.heart_logo);
+            nav_Menu.findItem(R.id.nav_doctor).setVisible(false);
+            nav_Menu.findItem(R.id.nav_logout).setVisible(false);
+            nav_Menu.findItem(R.id.nav_login).setVisible(true);
+            nav_Menu.findItem(R.id.nav_home).setVisible(true);
+            nav_Menu.findItem(R.id.nav_notes).setVisible(true);
+            if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                try {
+                    Navigation.findNavController(getView()).navigate(R.id.action_nav_login_to_nav_home);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 

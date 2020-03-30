@@ -184,7 +184,7 @@ public class NotesFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.d("checkTime", checkNote.time);
-                NoteView nv1 = new NoteView(dataSnapshot.getValue().toString(), time, num);
+                NoteView nv1 = new NoteView(dataSnapshot.getValue().toString(), time, num, checkNote.doctorId);
                 doctorTempUser.add(nv1);
                 myCallback.onCallback(doctorTempUser);
             }

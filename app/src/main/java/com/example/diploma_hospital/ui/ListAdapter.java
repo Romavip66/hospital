@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.diploma_hospital.R;
 import com.example.diploma_hospital.model.NoteView;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -69,17 +71,43 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         try {
             Date currentDate = new Date();
             Date checkDate = sdf.parse(weightData.getDate());
-            if (currentDate.compareTo(checkDate) < 0){
+            if (currentDate.compareTo(checkDate) < 0) {
                 holder.cardView.setBackgroundColor(Color.GREEN);
-            }else if(currentDate.compareTo(checkDate) > 0){
+                holder.date.setText(weightData.getDate());
+            } else if (currentDate.compareTo(checkDate) > 0) {
                 holder.cardView.setBackgroundColor(Color.LTGRAY);
+                holder.date.setText(weightData.getDate());
             }
+
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        holder.date.setText(weightData.getDate());
+        if(weightData.getGuestName().length()>7){
+            holder.name.setTextSize(18);
+        }
+        if(weightData.getGuestName().length()>20){
+            holder.name.setTextSize(16);
+        }
+
+
         holder.name.setText(weightData.getGuestName());
-        holder.number.setText(weightData.getNum());
+
+        if(weightData.getDate().equals("1")){
+            holder.cardView.setBackgroundColor(Color.GREEN);
+            holder.date.setText("Ваш анализ готов");
+        }else if(weightData.getDate().equals("0")){
+            holder.cardView.setBackgroundColor(Color.YELLOW);
+            holder.date.setText("Находится в обработке");
+        }
+        else {
+            holder.date.setText(weightData.getDate());
+        }
+        if (weightData.getNum().equals(" ")) {
+            holder.number.setVisibility(View.INVISIBLE);
+        } else {
+            holder.number.setVisibility(View.VISIBLE);
+            holder.number.setText(weightData.getNum());
+        }
     }
 
     @Override

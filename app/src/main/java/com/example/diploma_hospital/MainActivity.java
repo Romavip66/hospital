@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_login, R.id.nav_doctor, R.id.nav_notes, R.id.nav_logout, R.id.nav_signup,  R.id.nav_first)
+                R.id.nav_home, R.id.nav_login, R.id.nav_doctor, R.id.nav_notes, R.id.nav_logout, R.id.nav_signup,  R.id.nav_first, R.id.nav_analyzes)
                 .setDrawerLayout(drawer)
                 .build();
         hideItem();
@@ -56,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
         nav_Menu.findItem(R.id.nav_doctor).setVisible(false);
         nav_Menu.findItem(R.id.nav_home).setVisible(false);
         nav_Menu.findItem(R.id.nav_notes).setVisible(false);
+        nav_Menu.findItem(R.id.nav_comments).setVisible(false);
+        nav_Menu.findItem(R.id.nav_analyzes).setVisible(false);
     }
 
     /*@Override
@@ -79,5 +81,12 @@ public class MainActivity extends AppCompatActivity {
         //Navigation.findNavController(getView()).navigate(R.id.action_nav_logout_to_nav_login);
         finish();
         //Navigation.findNavController(getView()).navigate(R.id.action_nav_logout_to_nav_login);
+    }
+
+    public void onBackPressed(){
+        Intent a = new Intent(Intent.ACTION_MAIN);
+        a.addCategory(Intent.CATEGORY_HOME);
+        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(a);
     }
 }

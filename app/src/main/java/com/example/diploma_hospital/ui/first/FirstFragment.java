@@ -80,12 +80,16 @@ public class FirstFragment extends Fragment {
                                 imageViewCheck.setImageResource(R.drawable.user);
                                 nav_Menu.findItem(R.id.nav_home).setVisible(true);
                                 nav_Menu.findItem(R.id.nav_notes).setVisible(true);
+                                nav_Menu.findItem(R.id.nav_comments).setVisible(true);
                                 nav_Menu.findItem(R.id.nav_doctor).setVisible(false);
+                                nav_Menu.findItem(R.id.nav_analyzes).setVisible(true);
                                 pd.dismiss();
                             } else {
                                 imageViewCheck.setImageResource(R.drawable.doctor);
                                 nav_Menu.findItem(R.id.nav_home).setVisible(false);
+                                nav_Menu.findItem(R.id.nav_analyzes).setVisible(false);
                                 nav_Menu.findItem(R.id.nav_notes).setVisible(false);
+                                nav_Menu.findItem(R.id.nav_comments).setVisible(false);
                                 nav_Menu.findItem(R.id.nav_doctor).setVisible(true);
                                 pd.dismiss();
                             }

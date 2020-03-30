@@ -13,7 +13,12 @@
 
     <string name="home_second">Home Second</string>
     <string name="headerText">Онлайн Больница</string>
-    <string name="loremIpsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc suscipit posuere pulvinar. In vitae ante vitae eros hendrerit ultrices. Suspendisse ornare, neque in rhoncus posuere, enim leo sagittis lacus, quis facilisis lorem velit id nibh. Duis euismod, tortor ut venenatis consequat, nisl felis fermentum odio, ut blandit nunc quam ut dui. Cras et tempus augue. Donec venenatis dapibus vestibulum. Nullam dignissim risus vehicula sapien aliquet, vitae imperdiet turpis tempus. Vivamus tincidunt odio mi, volutpat posuere sem volutpat eu. Nunc aliquet efficitur augue sed egestas.</string>
+    <string name="loremIpsum">
+        Тақырыбы: Емхананың ақпараттық басқару жүйесін жетілдіру.
+    \nМодернизация информационно-управляющей системы клиники.
+    \nModernization of the information management system of clinic.
+\nОрындаған: Бақыбаев Нұрлан Мұратұлы
+\nГруппа: ВТк-16-1</string>
 
     <string-array name="array_name">
         <item>Ожидание...</item>

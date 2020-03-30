@@ -71,7 +71,7 @@
     <fragment
         android:id="@+id/nav_signup"
         android:name="com.example.diploma_hospital.ui.signup.SignUpFragment"
-        android:label="Регитсрация"
+        android:label="Регистрация"
         tools:layout="@layout/sign_up_fragment">
         <action
             android:id="@+id/action_nav_signup_to_nav_home"
@@ -80,4 +80,16 @@
             android:id="@+id/action_nav_signup_to_nav_login"
             app:destination="@id/nav_login" />
     </fragment>
+
+    <fragment
+        android:id="@+id/nav_comments"
+        android:name="com.example.diploma_hospital.ui.comments.CommentsFragment"
+        android:label="Список врачей"
+        tools:layout="@layout/comments_fragment"/>
+
+    <fragment
+        android:id="@+id/nav_analyzes"
+        android:name="com.example.diploma_hospital.ui.analyzes.AnalyzesFragment"
+        android:label="Мои анализы"
+        tools:layout="@layout/analyzes_fragment"/>
 </navigation>

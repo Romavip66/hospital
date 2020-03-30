@@ -4,7 +4,7 @@ public class NoteView {
     public String guestName;
     public String date;
     public String num;
-
+    public String uid;
     public String getGuestName() {
         return guestName;
     }
@@ -29,12 +29,21 @@ public class NoteView {
         this.num = num;
     }
 
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
     public NoteView() {
     }
 
-    public NoteView(String guestName, String date, String num) {
+    public NoteView(String guestName, String date, String num, String uid) {
         this.guestName = guestName;
         this.date = date;
         this.num = num;
+        this.uid=uid;
     }
 }
