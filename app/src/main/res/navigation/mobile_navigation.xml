@@ -7,7 +7,7 @@
     <fragment
         android:id="@+id/nav_first"
         android:name="com.example.diploma_hospital.ui.first.FirstFragment"
-        android:label="Дипломная работа"
+        android:label="Дипломный проект"
         tools:layout="@layout/first_fragment"/>
     <fragment
         android:id="@+id/nav_home"

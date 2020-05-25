@@ -14,11 +14,9 @@
     <string name="home_second">Home Second</string>
     <string name="headerText">Онлайн Больница</string>
     <string name="loremIpsum">
-        Тақырыбы: Емхананың ақпараттық басқару жүйесін жетілдіру.
-    \nМодернизация информационно-управляющей системы клиники.
-    \nModernization of the information management system of clinic.
-\nОрындаған: Бақыбаев Нұрлан Мұратұлы
-\nГруппа: ВТк-16-1</string>
+        Орындаған: Бақыбаев Нұрлан
+\nЖетекші: PhD, доцент Кожамкулова Ж.Ж
+</string>
 
     <string-array name="array_name">
         <item>Ожидание...</item>
