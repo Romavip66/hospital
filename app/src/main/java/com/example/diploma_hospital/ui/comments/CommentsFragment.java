@@ -257,6 +257,7 @@ public class CommentsFragment extends Fragment {
                                                                 DatabaseReference rb1 = FirebaseDatabase.getInstance().getReference("Comments").child(selectedUid).child(strDate);
                                                                 rb1.child(curName).setValue(val);
                                                                 Toast.makeText(getContext(), "Ваш комментарий добавлен!", Toast.LENGTH_SHORT).show();
+                                                                coms.setText("");
                                                             }
                                                         }
                                                     });
